@@ -18,9 +18,18 @@ await transport.init()
 const handler = createTransportHandler<UserApi>(transport)
 
 handler.on(
-  x => x.User.login,
-  (_, payload) => {
-    return payload.username === payload.password
+  x => x.Command.User.login,
+  async (_, payload) => {
+    const isSuccess = payload.username === payload.password
+
+    if (isSuccess) {
+      await api.publish.Event.userLoggedIn({
+        username: payload.username,
+        timestamp: new Date(),
+      })
+    }
+
+    return isSuccess
   },
 )
 
@@ -36,7 +45,7 @@ await transport.start()
 
 const api = createTransportApi<UserApi>(transport)
 
-const result = await api.execute.User.login({
+const result = await api.execute.Command.User.login({
   username: 'Me',
   password: 'Me',
 })

@@ -1,12 +1,21 @@
 import { ApiWithExecutableKeys } from '../deps.ts'
 
 type Api = {
-  User: {
-    login: (props: {
+  Command: {
+    User: {
+      login: (props: {
+        username: string
+        password: string
+      }) => Promise<boolean>
+    }
+  }
+
+  Event: {
+    userLoggedIn: (props: {
       username: string
-      password: string
-    }) => Promise<boolean>
+      timestamp: Date
+    }) => Promise<void>
   }
 }
 
-export type UserApi = ApiWithExecutableKeys<Api, 'User'>
+export type UserApi = ApiWithExecutableKeys<Api, 'Command'>
